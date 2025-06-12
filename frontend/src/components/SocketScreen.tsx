@@ -16,6 +16,45 @@ const SocketScreen: React.FC = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // useEffect(() => {
+  //   inputRef.current?.focus();
+
+  //   const socket = io('http://localhost:4000', {
+  //     auth: { token: getToken() },
+  //     transports: ['websocket']
+  //   });
+
+  //   socket.on('connect_error', (err) => {
+  //     console.error('Socket Connection Error:', err.message);
+  //   });
+
+  //   socket.on('transaction_ack', (data: string) => {
+  //     try {
+  //       const decrypted = decrypt(data);
+  //       const msgText =
+  //         typeof decrypted === 'string'
+  //           ? decrypted
+  //           : JSON.stringify(decrypted, null, 2);
+
+  //       setMessages((prev) => [
+  //         ...prev,
+  //         { from: 'server', text: msgText, time: new Date().toLocaleTimeString() }
+  //       ]);
+  //     } catch (err) {
+  //       console.error('Decryption failed:', err);
+  //       setMessages((prev) => [
+  //         ...prev,
+  //         { from: 'server', text: '[Error decrypting message]', time: new Date().toLocaleTimeString() }
+  //       ]);
+  //     }
+  //   });
+
+  //   socketRef.current = socket;
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
   useEffect(() => {
     inputRef.current?.focus();
 
@@ -31,11 +70,20 @@ const SocketScreen: React.FC = () => {
     socket.on('transaction_ack', (data: string) => {
       try {
         const decrypted = decrypt(data);
-        const msgText =
-          typeof decrypted === 'string'
-            ? decrypted
-            : JSON.stringify(decrypted, null, 2);
 
+        let msgText = '';
+
+        if (typeof decrypted === 'string') {
+          msgText = decrypted;
+        } else if (typeof decrypted === 'object') {
+          const mainMessage = decrypted.message || '';
+          const innerMsg = decrypted.receivedData?.msg || '';
+          msgText = `${mainMessage}${innerMsg ? ` - ${innerMsg}` : ''}` || '[No message in response]';
+        } else {
+          msgText = '[Unknown message format]';
+        }
+
+        console.log(decrypted, "decrypted")
         setMessages((prev) => [
           ...prev,
           { from: 'server', text: msgText, time: new Date().toLocaleTimeString() }
@@ -55,6 +103,7 @@ const SocketScreen: React.FC = () => {
       socket.disconnect();
     };
   }, []);
+
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -89,8 +138,8 @@ const SocketScreen: React.FC = () => {
             <div
               key={idx}
               className={`max-w-[80%] px-4 py-2 rounded-2xl shadow-sm text-sm break-words ${msg.from === 'user'
-                  ? 'bg-blue-500 text-white ml-auto'
-                  : 'bg-gray-200 text-gray-800 mr-auto'
+                ? 'bg-blue-500 text-white ml-auto'
+                : 'bg-gray-200 text-gray-800 mr-auto'
                 }`}
             >
               <div>{msg.text}</div>
