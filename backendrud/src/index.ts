@@ -1,4 +1,4 @@
-// server.ts
+
 import express, { Request, Response } from 'express';
 import http from 'http';
 import dotenv from 'dotenv';
@@ -51,7 +51,7 @@ io.use((socket, next) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('⚡ Client connected:', socket.id);
+  console.log(' Client connected:', socket.id);
 
   socket.on('transaction', (encryptedData: string) => {
     try {

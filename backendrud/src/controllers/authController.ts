@@ -3,11 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { User } from '../models/User';
-
 dotenv.config();
-
 const jwtSecret = process.env.JWT_SECRET;
-
 if (!jwtSecret) {
 	throw new Error('JWT_SECRET is not defined in environment variables');
 }
@@ -18,24 +15,14 @@ if (!jwtSecret) {
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { name, email, password } = req.body;
-
-		// Check if user already exists
 		const existingUser = await User.findOne({ email });
 		if (existingUser) {
 			res.status(400).json({ success: false, message: 'Email is already registered.' });
 			return;
 		}
-
-		// Hash password
 		const hashedPassword = await bcrypt.hash(password, 10);
-
-		// Create user
 		const user = await User.create({ name, email, password: hashedPassword });
-
-		// Generate token
 		const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: '1d' });
-
-		// Respond with success
 		res.status(201).json({
 			success: true,
 			message: 'Registration successful.',
@@ -62,25 +49,18 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { email, password } = req.body;
-
-		// Find user
 		const user = await User.findOne({ email });
 		if (!user) {
 			res.status(401).json({ success: false, message: 'Email is not registered.' });
 			return;
 		}
-
-		// Compare password
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
 			res.status(401).json({ success: false, message: 'Invalid password.' });
 			return;
 		}
 
-		// Generate token
 		const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: '1d' });
-
-		// Respond with success
 		res.status(200).json({
 			success: true,
 			message: 'Login successful.',
@@ -101,7 +81,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
-  // Token verified in middleware — just return the user data
   try {
     const userId = (req as any).user?.id;
 
