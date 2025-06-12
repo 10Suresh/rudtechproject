@@ -19,7 +19,7 @@ const SocketScreen: React.FC = () => {
   useEffect(() => {
     inputRef.current?.focus();
 
-    const socket = io('http://localhost:4000', {
+    const socket = io('https://chatbackend-joh5.onrender.com', {
       auth: { token: getToken() },
       transports: ['websocket']
     });
@@ -86,11 +86,10 @@ const SocketScreen: React.FC = () => {
           {messages.map((msg, idx) => (
             <div
               key={idx}
-              className={`max-w-[75%] p-2 rounded break-words text-sm border ${
-                msg.from === 'user'
-                  ? 'bg-blue-100 ml-auto'
-                  : 'bg-gray-200 mr-auto'
-              } text-black`}
+              className={`max-w-[75%] p-2 rounded break-words text-sm border ${msg.from === 'user'
+                ? 'bg-blue-100 ml-auto'
+                : 'bg-gray-200 mr-auto'
+                } text-black`}
             >
               <div>{msg.text}</div>
               <div className="text-xs opacity-60 mt-1 text-right">{msg.time}</div>

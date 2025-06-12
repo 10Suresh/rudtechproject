@@ -16,7 +16,7 @@ const Users: React.FC = () => {
             try {
                 const token = localStorage.getItem('token'); // or sessionStorage.getItem('token')
 
-                const res = await fetch('http://localhost:4000/api/users', {
+                const res = await fetch('https://chatbackend-joh5.onrender.com/api/users', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -28,7 +28,6 @@ const Users: React.FC = () => {
                 }
 
                 const data = await res.json();
-                console.log(data, "fetched users");
                 setUsers(data);
             } catch (error) {
                 console.error('Failed to fetch users:', error);

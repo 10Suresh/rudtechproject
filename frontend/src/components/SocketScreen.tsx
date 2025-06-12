@@ -58,7 +58,7 @@ const SocketScreen: React.FC = () => {
   useEffect(() => {
     inputRef.current?.focus();
 
-    const socket = io('http://localhost:4000', {
+    const socket = io('https://chatbackend-joh5.onrender.com', {
       auth: { token: getToken() },
       transports: ['websocket']
     });

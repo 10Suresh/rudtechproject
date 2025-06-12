@@ -1,11 +1,11 @@
 # rudtechproject
 
-A full-stack real-time application using React + TypeScript (Vite), Node.js (Express), Socket.io, Redis, JWT Auth, and MongoDB, fully Dockerized with CI/CD via GitHub Actions.
+A full-stack real-time application using React + TypeScript (Vite), Node.js (Express), Socket.io, JWT Auth, and MongoDB, fully Dockerized with CI/CD via GitHub Actions.
 
 ## Project Structure
 
 rudtechproject/
-├── backendrud/ # Node.js + Express + Socket.io + Redis
+├── backendrud/ # Node.js + Express + Socket.io 
 ├── frontend/ # React + TypeScript (Vite)
 ├── docker-compose.yml # Docker multi-service config
 └── .github/
@@ -33,13 +33,10 @@ npm run dev
 
      Frontend: React, TypeScript, Vite
 
-    Backend: Node.js, Express, Socket.io, Redis
-
+    Backend: Node.js, Express, Socket.io,
     Database: MongoDB
 
     Auth: JWT Token
-
-    Rate Limiting: Redis
 
     WebSockets: Binary socket transactions + encryption/decryption
 
