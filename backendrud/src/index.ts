@@ -6,14 +6,11 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-
 import authRoutes from './routes/authRoutes';
-
 import userRouter from './routes/userRoutes';
 import { encrypt, decrypt } from './utils/encryption';
 import rateLimiterMiddleware from './middleware/rateLimiter';
 dotenv.config();
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -32,14 +29,12 @@ app.get('/', (_req: Request, res: Response) => {
   res.send('API running 🚀');
 });
 app.use('/api/auth', authRoutes);
-// app.use('/api/redistest', router); // 
+
 app.use(rateLimiterMiddleware);
 app.use('/api/users', userRouter);
 app.get('/api/test-limit', rateLimiterMiddleware, (req: Request, res: Response) => {
   res.json({ status: 'success', message: 'Request passed through rate limiter.' });
 });
-
-// ✅ Socket.io middleware to verify JWT
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
   if (!token) return next(new Error('No token provided'));
