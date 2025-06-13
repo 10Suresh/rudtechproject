@@ -1,12 +1,12 @@
 
 import express from 'express';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
-import { redisClient } from '../utils/redisClient';
+import { client } from '../utils/redisClient';
 
 const router = express.Router();
 
 const rateLimiter = new RateLimiterRedis({
-  storeClient: redisClient,
+  storeClient: client,
   keyPrefix: 'http-test-limit',
   points: 5,      
   duration: 60     

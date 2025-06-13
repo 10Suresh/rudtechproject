@@ -8,10 +8,10 @@ import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 
 import authRoutes from './routes/authRoutes';
-import router from './routes/redisTestRoutes'; 
+
 import userRouter from './routes/userRoutes';
 import { encrypt, decrypt } from './utils/encryption';
-
+import rateLimiterMiddleware from './middleware/rateLimiter';
 dotenv.config();
 
 const app = express();
@@ -33,7 +33,11 @@ app.get('/', (_req: Request, res: Response) => {
 });
 app.use('/api/auth', authRoutes);
 // app.use('/api/redistest', router); // 
+app.use(rateLimiterMiddleware);
 app.use('/api/users', userRouter);
+app.get('/api/test-limit', rateLimiterMiddleware, (req: Request, res: Response) => {
+  res.json({ status: 'success', message: 'Request passed through rate limiter.' });
+});
 
 // ✅ Socket.io middleware to verify JWT
 io.use((socket, next) => {

@@ -1,23 +1,20 @@
 # Use Node.js base image
 FROM node:18
 
-# Create app directory
+# Set working directory
 WORKDIR /src
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (including dev dependencies)
 RUN npm install
 
-# Give execute permission to ts-node-dev just in case
-RUN chmod +x ./node_modules/.bin/ts-node-dev
-
-# Copy the rest of the code
+# Copy all source files
 COPY . .
 
-# Expose port
+# Expose app port
 EXPOSE 4000
 
-# Start dev server
+# Start app using npm script
 CMD ["npm", "run", "dev"]
