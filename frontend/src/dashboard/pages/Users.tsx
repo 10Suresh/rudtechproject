@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import API from '../../api';
+
 interface User {
   id: string;
   name: string;
@@ -13,22 +15,15 @@ const Users: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-
-        const res = await fetch('http://localhost:4000/api/users', {
-
+        const response = await API.get<User[]>('/users', {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+          },
         });
 
-        if (!res.ok) {
-          throw new Error(`Error: ${res.status}`);
-        }
-        const data = await res.json();
-        setUsers(data);
-      } catch (error) {
-        console.error('Failed to fetch users:', error);
+        setUsers(response.data);
+      } catch (err: any) {
+        console.error('Failed to fetch users:', err.response?.status, err.message);
       } finally {
         setLoading(false);
       }
@@ -40,7 +35,6 @@ const Users: React.FC = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">👥 User Management</h2>
-
       {loading ? (
         <div className="text-gray-500 animate-pulse">Loading users...</div>
       ) : users.length === 0 ? (
@@ -58,7 +52,7 @@ const Users: React.FC = () => {
             <tbody>
               {users.map((user, idx) => (
                 <tr
-                  key={idx}
+                  key={user.id}
                   className="border-t hover:bg-blue-50 transition-colors"
                 >
                   <td className="py-3 px-4">{idx + 1}</td>
