@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 interface User {
   id: string;
   name: string;
@@ -15,7 +14,8 @@ const Users: React.FC = () => {
       try {
         const token = localStorage.getItem('token');
 
-        const res = await fetch('https://chatbackend-joh5.onrender.com/api/users', {
+        const res = await fetch('http://localhost:4000/api/users', {
+
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -25,7 +25,6 @@ const Users: React.FC = () => {
         if (!res.ok) {
           throw new Error(`Error: ${res.status}`);
         }
-
         const data = await res.json();
         setUsers(data);
       } catch (error) {

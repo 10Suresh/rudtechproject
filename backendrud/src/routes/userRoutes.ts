@@ -1,17 +1,9 @@
+import { Router } from "express";
+import { getAllUsers } from "../controllers/userController";
+import authenticateToken from "../middleware/authMiddleware";
 
-import express from 'express';
-import { User } from '../models/User';
-import authenticateToken from '../middleware/authMiddleware';
+const router = Router();
 
-const userRouter = express.Router();
-userRouter.get('/', authenticateToken, async (req, res) => {
-	try {
-		const users = await User.find().select('-password'); 
-		res.json(users);
-	} catch (error) {
-		console.error('Error fetching users:', error);
-		res.status(500).json({ message: 'Server error' });
-	}
-});
+router.get("/", authenticateToken, getAllUsers);
 
-export default userRouter;
+export default router;

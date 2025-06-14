@@ -1,13 +1,19 @@
-
 import { RateLimiterRedis } from "rate-limiter-flexible";
 import { client } from "../utils/redisClient";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+// const rateLimiter = new RateLimiterRedis({
+//   storeClient: client,
+//   keyPrefix: "middleware",
+//   points: 20,
+//   duration: 60,
+// });
 const rateLimiter = new RateLimiterRedis({
   storeClient: client,
   keyPrefix: "middleware",
-  points: 10,
+  points: 20,
   duration: 60,
+  blockDuration: 60,
 });
 
 const rateLimiterMiddleware = (
@@ -30,12 +36,11 @@ const rateLimiterMiddleware = (
     .consume(key)
     .then(() => next())
     .catch((rejRes) => {
-      res.set("Retry-After", String(Math.ceil(rejRes.msBeforeNext / 1000)));
+      const retrySecs = Math.ceil(rejRes.msBeforeNext / 1000);
+      res.setHeader("Retry-After", String(retrySecs));
       res.status(429).json({
         status: "error",
-        message: `Too many requests. Try again in ${Math.ceil(
-          rejRes.msBeforeNext / 1000
-        )} seconds.`,
+        message: `many requests.Suresh Retry in ${retrySecs} seconds.`,
       });
     });
 };
